@@ -1,8 +1,8 @@
 package main
 
 import (
-	"aurh-service/internal/config"
-	"aurh-service/internal/routes"
+	"auth-service/internal/config"
+	"auth-service/internal/routes"
 	"log"
 	"net/http"
 )

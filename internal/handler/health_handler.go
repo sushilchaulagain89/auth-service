@@ -4,7 +4,7 @@ import (
 	"net/http"
 	
 	"github.com/gin-gonic/gin"
-	"aurh-service/internal/service"
+	"auth-service/internal/service"
 )
 
 func HealthCheck(c *gin.Context){
