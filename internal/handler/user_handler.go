@@ -15,7 +15,7 @@ func CreateUser(c *gin.Context) {
 		Email string `json:"email"`
 	}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil || req.Email == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 		return
 	}
@@ -25,7 +25,7 @@ func CreateUser(c *gin.Context) {
 
 	err := svc.CreateUser(req.Email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "db error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
 
