@@ -2,12 +2,14 @@ package main
 
 import (
 	"auth-service/internal/config"
+	"auth-service/internal/db"
 	"auth-service/internal/routes"
 	"log"
 	"net/http"
 )
 
 func main(){
+	db.Connect()
 	//initialize router
 	router := config.SetUpRouter()
 
