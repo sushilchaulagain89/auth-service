@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"aurh-service/internal/handler"
+	"auth-service/internal/handler"
 
 	"github.com/gin-gonic/gin"
 )

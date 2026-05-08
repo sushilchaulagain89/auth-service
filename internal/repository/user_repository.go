@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"aurh-service/internal/db"
+	"auth-service/internal/db"
 	"context"
 )
  type UserRepository struct{}
