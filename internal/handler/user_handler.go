@@ -17,14 +17,15 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	var req struct {
 		Email string `json:"email"`
+		Password string `json:"password"`
 	}
 
-	if err := c.ShouldBindJSON(&req); err != nil || req.Email == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Email is required"})
+	if err := c.ShouldBindJSON(&req); err != nil || req.Email == ""|| req.Password == ""{
+		c.JSON(http.StatusBadRequest, gin.H{"error": "All field required!!"})
 		return
 	}
 
-	err := h.Service.CreateUser(req.Email)
+	err := h.Service.CreateUser(req.Email,req.Password)
 	if err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
 			if pgErr.Code == "23505" {
