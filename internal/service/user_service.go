@@ -1,6 +1,7 @@
 package service
 
 import (
+	"auth-service/internal/auth"
 	"auth-service/internal/repository"
 	"errors"
 
@@ -11,34 +12,48 @@ type UserService struct {
 	Repo *repository.UserRepository
 }
 
+// ---------------- ERRORS ----------------
+
 var (
-	ErrEmailExists  = errors.New("email already exists")
 	ErrInvalidLogin = errors.New("invalid credentials")
-	ErrUserNotFound = errors.New("user not found")
+	ErrUserExists   = errors.New("user already exists")
 )
 
+// ---------------- REGISTER ----------------
+
 func (s *UserService) CreateUser(email string, password string) error {
-	passwordBytes := []byte(password)
-	passwordHash, err := bcrypt.GenerateFromPassword(passwordBytes, bcrypt.DefaultCost)
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
-	return s.Repo.CreateUser(email, string(passwordHash))
+
+	return s.Repo.CreateUser(email, string(hash))
 }
 
-func (s *UserService) Login(email, password string) error {
+// ---------------- LOGIN ----------------
+
+func (s *UserService) Login(email, password string) (string, string, error) {
+
 	user, err := s.Repo.GetUserByEmail(email)
 	if err != nil {
-		return ErrInvalidLogin
+		return "", "", ErrInvalidLogin
 	}
 
 	err = bcrypt.CompareHashAndPassword(
 		[]byte(user.PasswordHash),
 		[]byte(password),
 	)
+
 	if err != nil {
-		return ErrInvalidLogin
+		return "", "", ErrInvalidLogin
 	}
 
-	return nil
+	// 🔐 JWT GENERATION
+	access, refresh, err := auth.GenerateAllTokens(user.ID, user.Email)
+	if err != nil {
+		return "", "", err
+	}
+
+	return access, refresh, nil
 }

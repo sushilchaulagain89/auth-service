@@ -9,9 +9,15 @@ import (
 	"auth-service/internal/service"
 	"log"
 	"net/http"
+	"os"
 )
 
-func main(){
+func main() {
+	jwtSecret := os.Getenv("JWT_SECRET")
+
+	if jwtSecret == "" {
+		log.Fatal("JWT_SECRET is not set")
+	}
 	// database connection
 	db.Connect()
 
@@ -28,15 +34,14 @@ func main(){
 	router := config.SetUpRouter()
 
 	//register router
-	routes.RegisterRoutes(router,userHandler)
+	routes.RegisterRoutes(router, userHandler)
 
 	//start server
-	port :=":8080"
-	log.Println("Server is running on port",port)
+	port := ":8080"
+	log.Println("Server is running on port", port)
 
-	err := http.ListenAndServe(port,router)
+	err := http.ListenAndServe(port, router)
 	if err != nil {
-		log.Fatal("Server failed:",err)
+		log.Fatal("Server failed:", err)
 	}
 }
-
